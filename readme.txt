@@ -1,0 +1,1 @@
+This plugin is a simple template for authenticating user against a external user repository.

@@ -1,0 +1,360 @@
+<!--
+   Copyright 2011 Blue River Interactive
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<plugin>
+<name>User Bridge</name>
+<version>1.0</version>
+<provider>Blue River</provider>
+<package>userbridge</package>
+<directoryFormat>packageOnly</directoryFormat>
+<loadPriority>5</loadPriority>
+<providerURL>http://blueriver.com</providerURL>
+<category>Application</category>
+<settings>
+	<!--
+	<setting>
+		<name>Start</name>
+		<label></label>
+		<hint>Distinguished name of entry to be used to start a search. </hint>
+		<type>text</type>
+		<required>true</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue></defaultvalue>
+		<optionlist></optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	<setting>
+		<name>Server</name>
+		<label></label>
+		<hint>Host name or IP address of LDAP server.</hint>
+		<type>text</type>
+		<required>true</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue>localhost</defaultvalue>
+		<optionlist></optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	<setting>
+		<name>userDomain</name>
+		<label></label>
+		<hint>Login domain. This can be a comma separated list.</hint>
+		<type>text</type>
+		<required>true</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue></defaultvalue>
+		<optionlist></optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	<setting>
+		<name>Scope</name>
+		<label></label>
+		<hint>LDAP Search Scope</hint>
+		<type>text</type>
+		<required>true</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue>subtree</defaultvalue>
+		<optionlist></optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	
+	<setting>
+		<name>Port</name>
+		<label></label>
+		<hint>Host port of LDAP server.</hint>
+		<type>text</type>
+		<required>true</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue>389</defaultvalue>
+		<optionlist></optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	
+	<setting>
+		<name>useSSL</name>
+		<label>Use SSL</label>
+		<hint></hint>
+		<type>select</type>
+		<required>true</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue>False</defaultvalue>
+		<optionlist>True^False</optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	
+	<setting>
+		<name>UID</name>
+		<label>LDAP attribute for 'UID'</label>
+		<hint></hint>
+		<type>text</type>
+		<required>true</required>
+		<validation></validation>
+		<regex></regex>
+		<message>The 'Username' field is required.</message>
+		<defaultvalue>samaccountname</defaultvalue>
+		<optionlist></optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	
+	<setting>
+		<name>UsernameSyntaxDelimeter</name>
+		<label>The Username Syntax delimiter that is user between'UID' and 'UserDomain'.</label>
+		<hint></hint>
+		<type>text</type>
+		<required>true</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue>\</defaultvalue>
+		<optionlist></optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	
+	<setting>
+		<name>UsernameSyntax</name>
+		<label>The Username Syntax that combines the 'UID' and 'UserDomain'.</label>
+		<hint></hint>
+		<type>text</type>
+		<required>true</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue>{UID}{delimiter}{UserDomain}</defaultvalue>
+		<optionlist></optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	
+	<setting>
+		<name>FirstName</name>
+		<label>LDAP attribute for 'First Name'</label>
+		<hint></hint>
+		<type>text</type>
+		<required>true</required>
+		<validation></validation>
+		<regex></regex>
+		<message>The 'First Name' field is required.</message>
+		<defaultvalue>givenname</defaultvalue>
+		<optionlist></optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	
+	<setting>
+		<name>LastName</name>
+		<label>LDAP attribute for 'Last Name'</label>
+		<hint></hint>
+		<type>text</type>
+		<required>true</required>
+		<validation></validation>
+		<regex></regex>
+		<message>The 'Last Name' field is required.</message>
+		<defaultvalue>sn</defaultvalue>
+		<optionlist></optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	
+	<setting>
+		<name>Email</name>
+		<label>LDAP attribute for 'Email'</label>
+		<hint></hint>
+		<type>text</type>
+		<required>true</required>
+		<validation></validation>
+		<regex></regex>
+		<message>The 'Email' field is required.</message>
+		<defaultvalue>mail</defaultvalue>
+		<optionlist></optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	
+	<setting>
+		<name>MemberOf</name>
+		<label>LDAP attribute for 'MemberOf'</label>
+		<hint></hint>
+		<type>text</type>
+		<required>true</required>
+		<validation></validation>
+		<regex></regex>
+		<message>The 'MemberOf' field is required.</message>
+		<defaultvalue>MemberOf</defaultvalue>
+		<optionlist></optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	<setting>
+		<name>Debugging</name>
+		<label></label>
+		<hint></hint>
+		<type>selectbox</type>
+		<required>true</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue>False</defaultvalue>
+		<optionlist>True^False</optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	-->
+	<setting>
+		<name>AdminGroup</name>
+		<label>Admin Group Mapping</label>
+		<hint>This is the active directory group that represents the Sava 'Admin' group membership.</hint>
+		<type>text</type>
+		<required>true</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue>Web_Admin</defaultvalue>
+		<optionlist></optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	<setting>
+		<name>isPublic</name>
+		<label>Default Member type</label>
+		<hint></hint>
+		<type>selectbox</type>
+		<required>true</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue>1</defaultvalue>
+		<optionlist>1^0</optionlist>
+		<optionlabellist>Site Member^Administrative User</optionlabellist>
+	</setting>
+	<setting>
+		<name>where</name>
+		<label>Where should this plugin be applied?</label>
+		<hint></hint>
+		<type>selectbox</type>
+		<required>true</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue>Site</defaultvalue>
+		<optionlist>Site^Global</optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	
+	<setting>
+		<name>SyncMemberships</name>
+		<label>Sync MemberShips</label>
+		<hint></hint>
+		<type>selectbox</type>
+		<required>true</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue>False</defaultvalue>
+		<optionlist>True^False</optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	<!-- 
+	<setting>
+		<name>Mode</name>
+		<label></label>
+		<hint></hint>
+		<type>selectbox</type>
+		<required>true</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue>Manual</defaultvalue>
+		<optionlist>Manual^Automatic</optionlist>
+		<optionlabellist>Manual^Automatic (not implemented)</optionlabellist>
+	</setting>
+	-->
+	<setting>
+		<name>GroupID</name>
+		<label>The User ID of any default group that you want users to be a member of when created</label>
+		<hint></hint>
+		<type>text</type>
+		<required>false</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue></defaultvalue>
+		<optionlist></optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	
+	<setting>
+		<name>defaultSiteID</name>
+		<label>The default siteID to be used if none is defined.</label>
+		<hint></hint>
+		<type>text</type>
+		<required>false</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue></defaultvalue>
+		<optionlist></optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	<!--
+	<setting>
+		<name>AutoLoginUsername</name>
+		<label>Auto Login Username</label>
+		<hint>This is the username that is used to login to the LDAP when the mode is set to automatic.</hint>
+		<type>text</type>
+		<required>false</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue></defaultvalue>
+		<optionlist></optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	<setting>
+		<name>AutoLoginPassword</name>
+		<label>Auto Login Password</label>
+		<hint>This is the password that is used to login to the LDAP when the mode is set to automatic.</hint>
+		<type>text</type>
+		<required>false</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue></defaultvalue>
+		<optionlist></optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	<setting>
+		<name>AutoLoginCurrentUser</name>
+		<label>Auto Login Current User</label>
+		<hint>This is where the plugin looks to find the user to auto login.</hint>
+		<type>text</type>
+		<required>false</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue>getAuthUser()</defaultvalue>
+		<optionlist></optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
+	-->
+</settings>
+<eventHandlers>
+	<eventHandler event="onApplicationLoad" component="lib.loginManager"/>
+</eventHandlers>
+<displayobjects location="global"/>
+</plugin>
