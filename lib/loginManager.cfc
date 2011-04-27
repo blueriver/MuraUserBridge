@@ -221,7 +221,7 @@ This is an lookup example for Active Directory. For it to work you will also nee
 		<cfset returnStruct.email=evaluate("rsUser.#LDAP.email#") />
 		
 		<cfif not len(returnStruct.email)>
-			<cfset  returnStruct.email=arguments.username & '@' & LDAP.server)>
+			<cfset  returnStruct.email=arguments.username & '@' & LDAP.server>
 		</cfif>
 		
 		<cfset returnStruct.memberships="">
@@ -240,7 +240,7 @@ This is an lookup example for Active Directory. For it to work you will also nee
 		<cfset returnStruct.username=""/>
 		<cfset returnStruct.fname="" />
 		<cfset returnStruct.lname="" />
-		<cfset returnStruct.email"" />
+		<cfset returnStruct.email="" />
 		<cfset returnStruct.memberships="">
 	</cfif>
 	
