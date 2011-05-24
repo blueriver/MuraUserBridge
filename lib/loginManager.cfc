@@ -228,7 +228,7 @@ This is an lookup example for Active Directory. For it to work you will also nee
 			            
 		<cfif variables.pluginConfig.getSetting('syncMemberships') eq "True">			
 			<cfloop list="#rsUser.memberof#" index="i">
-			<cfif listFirst(i,"=") eq "CN">
+			<cfif trim(listFirst(i,"=")) eq "CN">
 				<cfset returnStruct.memberships=listappend(returnStruct.memberships,listLast(i,"="))>
 			</cfif>
 			</cfloop>
