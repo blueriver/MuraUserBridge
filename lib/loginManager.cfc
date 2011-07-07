@@ -65,41 +65,42 @@
 	            </cfif>
 			</cfloop>
 		</cfif>
-								  		
-		<!--- Check to see if the user has previous login into the system --->
-		<cfset userBean=$.getBean('user').loadBy(RemoteID=userStruct.remoteID,siteID=$.event('siteID'))>						
-					
-		<cfset userBean.set(userStruct) />
-		<cfset userBean.setPassword(tempPassword) />
-		<cfset userBean.setlastUpdateBy('System') />
-					
-		<cfif variables.pluginConfig.getSetting('syncMemberships') eq "True">					
-			<cfset userBean.setGroupID(rolelist) />
-		</cfif>
-						
-		<cfif len(variables.pluginConfig.getSetting('groupID'))>
-			<cfset userBean.setGroupID(variables.pluginConfig.getSetting('groupID'),true) />
-		</cfif>
-					
-		<cfif userBean.getIsNew()>
-			<cfif variables.pluginConfig.getSetting('isPublic') eq "0">
-				<cfset userBean.setSiteID($.siteConfig('PrivateUserPoolID'))/>
-				<cfset userBean.setIsPublic(0)>
-			<cfelse>
-				<cfset userBean.setSiteID($.siteConfig('PublicUserPoolID')) />
-				<cfset userBean.setIsPublic(1)>
-			</cfif>
-		</cfif>
-					
-		<cfset userBean.save()>				
 		
+		<cflock name="#$.event('siteID')##userStruct.remoteID#userBridge" timeout="30" type="exclusive">
+			<!--- Check to see if the user has previous login into the system --->
+			<cfset userBean=$.getBean('user').loadBy(RemoteID=userStruct.remoteID,siteID=$.event('siteID'))>						
+						
+			<cfset userBean.set(userStruct) />
+			<cfset userBean.setPassword(tempPassword) />
+			<cfset userBean.setlastUpdateBy('System') />
+						
+			<cfif variables.pluginConfig.getSetting('syncMemberships') eq "True">					
+				<cfset userBean.setGroupID(rolelist) />
+			</cfif>
+							
+			<cfif len(variables.pluginConfig.getSetting('groupID'))>
+				<cfset userBean.setGroupID(variables.pluginConfig.getSetting('groupID'),true) />
+			</cfif>
+						
+			<cfif userBean.getIsNew()>
+				<cfif variables.pluginConfig.getSetting('isPublic') eq "0">
+					<cfset userBean.setSiteID($.siteConfig('PrivateUserPoolID'))/>
+					<cfset userBean.setIsPublic(0)>
+				<cfelse>
+					<cfset userBean.setSiteID($.siteConfig('PublicUserPoolID')) />
+					<cfset userBean.setIsPublic(1)>
+				</cfif>
+			</cfif>
+						
+			<cfset userBean.save()>				
+		</cflock>
 		<cfset $.event("username",userStruct.username)>
 		<cfset $.event("password",tempPassword)>
 	</cfif>
 			
 </cffunction>
 
-<!--- This is a simple example --->
+<!--- This is a simple example 
 <cffunction name="lookupUser" output="false">
 <cfargument name="username">
 <cfargument name="password">
@@ -129,8 +130,8 @@ Set the "returnStruct .success" variables. to true or false depending if the use
 
 <cfreturn returnStruct>
 </cffunction>
-<!---
-This is an lookup example for Active Directory. For it to work you will also need to uncomment settings in the config.xml 
+--->
+
 <cffunction name="lookupUser" access="public" output="false">
 	<cfargument name="username">
 	<cfargument name="password" default="">
@@ -247,7 +248,7 @@ This is an lookup example for Active Directory. For it to work you will also nee
 	<cfreturn returnStruct>
 								  			
 </cffunction>
---->
+
 
 <cffunction name="getSiteID" output="false" returntype="string">
 		<cfset var siteID="">
