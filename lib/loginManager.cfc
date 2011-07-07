@@ -138,7 +138,7 @@ Set the "returnStruct .success" variables. to true or false depending if the use
 	<cfargument name="mode" default="manual">
 	
 	<cfset var rsUser = "" />
-	<cfset var returnStruct = "" />
+	<cfset var returnStruct = structNew() />
 	<cfset var found=false />
 	<cfset var LDAP=structNew()>
 	<cfset var i="">
