@@ -197,6 +197,7 @@ Set the "returnStruct .success" variables. to true or false depending if the use
 			port="#LDAP.port#"
 			username="#LDAP.Username#"
 			password="#LDAP.password#"
+			secure="#LDAP.Secure#"
 			>
 			<!--- 
 			Removed LDAP secure attribute because it's not supported by Railo yet
