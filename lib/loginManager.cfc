@@ -28,11 +28,14 @@
 	<cfset var userBean = "" />
 	<cfset var rsMemberships = "" />
 	<cfset var rolelist="" />
+	<cfset var userUtil = "" />
 	<cfset var adminGroup=variables.pluginConfig.getSetting('AdminGroup')/>
 	<cfset var i="">
-	<cfset var tempPassword=createUUID()>
-	<cfset var siteID=$.event("siteID")>
-	
+	<cfset var tempPassword = createUUID() />
+	<cfset var siteID= $.event("siteID") />
+	<cfset var mode = $.event("externalLoginMode") />
+	<cfset var settingsManager = "" />
+		
 	<cfif not len(siteID)>
 		<cfif len(variables.pluginConfig.getSetting('defaultSiteID'))>
 			<cfset siteID=variables.pluginConfig.getSetting('defaultSiteID')>
@@ -96,8 +99,24 @@
 		</cflock>
 		<cfset $.event("username",userStruct.username)>
 		<cfset $.event("password",tempPassword)>
-	</cfif>
+		
+		<!--- log the user in --->
+		<cfif mode eq "auto">			
+			<cfset getBean("userUtility").loginByUserID(userBean.getUserID(),siteID) />			
+			<!--- set siteArray --->
+			<cfif session.mura.isLoggedIn and not structKeyExists(session,"siteArray") or ArrayLen(session.siteArray) eq 0>
+				<cfset session.siteArray=arrayNew(1) />
+				<cfset settingsManager = getBean("settingsManager") />
+				<cfloop collection="#settingsManager.getSites()#" item="site">
+					<cfif application.permUtility.getModulePerm("00000000000000000000000000000000000","#site#")>
+						<cfset arrayAppend(session.siteArray,site) />
+					</cfif>
+				</cfloop>
+			</cfif>			
+		</cfif>
 			
+	</cfif>
+	
 </cffunction>
 
 <!--- This is a simple example 
