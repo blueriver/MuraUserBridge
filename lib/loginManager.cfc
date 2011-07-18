@@ -30,9 +30,11 @@
 	<cfset var rolelist="" />
 	<cfset var adminGroup=variables.pluginConfig.getSetting('AdminGroup')/>
 	<cfset var i="">
-	<cfset var tempPassword=createUUID()>
-	<cfset var siteID=$.event("siteID")>
-	
+	<cfset var tempPassword = createUUID() />
+	<cfset var siteID= $.event("siteID") />
+	<cfset var mode = $.event("externalLoginMode") />
+	<cfset var settingsManager = "" />
+		
 	<cfif not len(siteID)>
 		<cfif len(variables.pluginConfig.getSetting('defaultSiteID'))>
 			<cfset siteID=variables.pluginConfig.getSetting('defaultSiteID')>
@@ -96,6 +98,22 @@
 		</cflock>
 		<cfset $.event("username",userStruct.username)>
 		<cfset $.event("password",tempPassword)>
+		
+		<!--- log the user in --->
+		<cfif mode eq "auto">			
+			<cfset getBean("userUtility").loginByUserID(userBean.getUserID(),siteID) />			
+			<!--- set siteArray --->
+			<cfif session.mura.isLoggedIn and not structKeyExists(session,"siteArray") or ArrayLen(session.siteArray) eq 0>
+				<cfset session.siteArray=arrayNew(1) />
+				<cfset settingsManager = getBean("settingsManager") />
+				<cfloop collection="#settingsManager.getSites()#" item="site">
+					<cfif application.permUtility.getModulePerm("00000000000000000000000000000000000","#site#")>
+						<cfset arrayAppend(session.siteArray,site) />
+					</cfif>
+				</cfloop>
+			</cfif>			
+		</cfif>
+			
 	</cfif>
 			
 </cffunction>
@@ -140,16 +158,17 @@ Set the "returnStruct .success" variables. to true or false depending if the use
 	<cfset var rsUser = "" />
 	<cfset var returnStruct = structNew() />
 	<cfset var found=false />
-	<cfset var LDAP=structNew()>
-	<cfset var i="">
+ 	<cfset var LDAP = structNew() />
+	<cfset var i = "" />
+	<cfset var remoteID = "" /> 
 	
 	<cfset LDAP.Scope=variables.pluginConfig.getSetting('Scope')/>
-	<!---<cfset LDAP.start=variables.pluginConfig.getSetting('start')/>--->		
-	<cfset LDAP.server=variables.pluginConfig.getSetting('Server')/>
-	<cfset LDAP.port=variables.pluginConfig.getSetting('Port')/>
+	<cfset LDAP.Start=variables.pluginConfig.getSetting('start')/>		
+	<cfset LDAP.Server=variables.pluginConfig.getSetting('Server')/>
+	<cfset LDAP.Port=variables.pluginConfig.getSetting('Port')/>
 	<cfset LDAP.FirstName=variables.pluginConfig.getSetting('FirstName')/>
 	<cfset LDAP.LastName=variables.pluginConfig.getSetting('LastName')/>
-	<cfset LDAP.delimiter=variables.pluginConfig.getSetting('UsernameSyntaxDelimeter')/>
+	<cfset LDAP.Delimiter=variables.pluginConfig.getSetting('UsernameSyntaxDelimeter')/>
 	<cfset LDAP.Email=variables.pluginConfig.getSetting('email')/>
 	<cfset LDAP.UID=variables.pluginConfig.getSetting('UID')/>
 	<cfset LDAP.MemberOf=variables.pluginConfig.getSetting('MemberOf')/>
@@ -160,28 +179,34 @@ Set the "returnStruct .success" variables. to true or false depending if the use
 		<cfset LDAP.userDomain=listFirst(variables.pluginConfig.getSetting('userDomain'))/>
 	</cfif>
 		
-	<!--- Dynamically set start based on userdomain for intel --->
-	<cfset LDAP.start="">
+	<!--- Dynamically set start based on userdomain for intel 
+	<cfset LDAP.Start="">
 	<cfloop from="1" to="#listLen(LDAP.userDomain,'.')#"index="i">
-		<cfset LDAP.start=listAppend(LDAP.start,"DC=#listGetAt(LDAP.userDomain,i,'.')#")>
+		<cfset LDAP.start=listAppend(LDAP.Start,"DC=#listGetAt(LDAP.userDomain,i,'.')#")>
 	</cfloop>
+	--->
 		
 	<cfif isBoolean(variables.pluginConfig.getSetting('useSSL'))
 			and variables.pluginConfig.getSetting('useSSL')>
-		<cfset LDAP.secure="CFSSL_Basic">
+		<cfset LDAP.Secure="CFSSL_Basic">
 	<cfelse>	
-		<cfset LDAP.secure="">
+		<cfset LDAP.Secure="">
 	</cfif>
+	
+	<cfset remoteID=variables.pluginConfig.getSetting('usernameSyntax')>
+	<cfset remoteID=replaceNoCase(remoteID,"{uid}",arguments.username,"ALL")>
+	<cfset remoteID=replaceNoCase(remoteID,"{delimiter}",LDAP.delimiter,"ALL")>
+	<cfset remoteID=replaceNoCase(remoteID,"{userdomain}",LDAP.UserDomain,"ALL")>
 	
 	<cfif arguments.mode eq "manual">
 		<cfset LDAP.Username=variables.pluginConfig.getSetting('usernameSyntax')>
 		<cfset LDAP.Username=replaceNoCase(LDAP.Username,"{uid}",arguments.username,"ALL")>
 		<cfset LDAP.Username=replaceNoCase(LDAP.Username,"{delimiter}",LDAP.delimiter,"ALL")>
 		<cfset LDAP.Username=replaceNoCase(LDAP.Username,"{userdomain}",LDAP.UserDomain,"ALL")>
-		<cfset LDAP.password=arguments.password>
+		<cfset LDAP.Password=arguments.password>
 	<cfelse>
 		<cfset LDAP.Username=variables.pluginConfig.getSetting('AutoLoginUsername')>
-		<cfset LDAP.password=variables.pluginConfig.getSetting('AutoLoginPassword')>
+		<cfset LDAP.Password=variables.pluginConfig.getSetting('AutoLoginPassword')>
 	</cfif>
 	
 	<!--- Get User --->
@@ -189,19 +214,16 @@ Set the "returnStruct .success" variables. to true or false depending if the use
 		<cfldap action="QUERY"
 			name="rsUser"
 			attributes="dn,#LDAP.FirstName#,#LDAP.LastName#,#LDAP.Email#,#LDAP.MemberOf#"
-			start="#LDAP.start#"
+			start="#LDAP.Start#"
 			maxrows="1"
 			scope="#LDAP.Scope#"
-			filter="#LDAP.uid#=#arguments.username#"
-			server="#LDAP.server#"
-			port="#LDAP.port#"
+			filter="#LDAP.UID#=#arguments.username#"
+			server="#LDAP.Server#"
+			port="#LDAP.Port#"
 			username="#LDAP.Username#"
-			password="#LDAP.password#"
-			secure="#LDAP.Secure#"
-			>
-			<!--- 
-			Removed LDAP secure attribute because it's not supported by Railo yet
-			secure="#LDAP.Secure#" --->
+			password="#LDAP.Password#"
+			secure="#LDAP.Secure#">
+			
 			<cfset found=true>
 
 				
@@ -220,7 +242,7 @@ Set the "returnStruct .success" variables. to true or false depending if the use
 		<cfset returnStruct.username=arguments.username />
 		<cfset returnStruct.fname=evaluate("rsUser.#LDAP.FirstName#") />
 		<cfset returnStruct.lname=evaluate("rsUser.#LDAP.LastName#") />
-		<cfset returnStruct.email=evaluate("rsUser.#LDAP.email#") />
+		<cfset returnStruct.email=evaluate("rsUser.#LDAP.Email#") />
 		
 		<cfif not len(returnStruct.email)>
 			<cfset  returnStruct.email=arguments.username & '@' & LDAP.server>
