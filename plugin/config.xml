@@ -269,7 +269,6 @@
 		<optionlist>True^False</optionlist>
 		<optionlabellist></optionlabellist>
 	</setting>
-	<!-- 
 	<setting>
 		<name>Mode</name>
 		<label></label>
@@ -282,8 +281,7 @@
 		<defaultvalue>Manual</defaultvalue>
 		<optionlist>Manual^Automatic</optionlist>
 		<optionlabellist>Manual^Automatic (not implemented)</optionlabellist>
-	</setting>
-	-->
+	</setting>	
 	<setting>
 		<name>GroupID</name>
 		<label>The User ID of any default group that you want users to be a member of when created</label>
