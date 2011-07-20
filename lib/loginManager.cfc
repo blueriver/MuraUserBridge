@@ -238,7 +238,7 @@ Set the "returnStruct .success" variables. to true or false depending if the use
 	<cfif found and rsUser.recordcount>
 	
 		<cfset returnStruct.found=true />
-		<cfset returnStruct.remoteID=LDAP.Username />
+		<cfset returnStruct.remoteID=remoteID />
 		<cfset returnStruct.username=arguments.username />
 		<cfset returnStruct.fname=evaluate("rsUser.#LDAP.FirstName#") />
 		<cfset returnStruct.lname=evaluate("rsUser.#LDAP.LastName#") />
