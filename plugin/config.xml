@@ -309,7 +309,6 @@
 		<optionlist></optionlist>
 		<optionlabellist></optionlabellist>
 	</setting>
-	<!--
 	<setting>
 		<name>AutoLoginUsername</name>
 		<label>Auto Login Username</label>
@@ -349,7 +348,6 @@
 		<optionlist></optionlist>
 		<optionlabellist></optionlabellist>
 	</setting>
-	-->
 </settings>
 <eventHandlers>
 	<eventHandler event="onApplicationLoad" component="lib.loginManager"/>

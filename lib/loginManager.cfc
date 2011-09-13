@@ -211,22 +211,36 @@ Set the "returnStruct .success" variables. to true or false depending if the use
 	
 	<!--- Get User --->
 	<cftry>
-		<cfldap action="QUERY"
-			name="rsUser"
-			attributes="dn,#LDAP.FirstName#,#LDAP.LastName#,#LDAP.Email#,#LDAP.MemberOf#"
-			start="#LDAP.Start#"
-			maxrows="1"
-			scope="#LDAP.Scope#"
-			filter="#LDAP.UID#=#arguments.username#"
-			server="#LDAP.Server#"
-			port="#LDAP.Port#"
-			username="#LDAP.Username#"
-			password="#LDAP.Password#"
-			secure="#LDAP.Secure#">
+		<cfif len(LDAP.Secure)>
+			<cfldap action="QUERY"
+				name="rsUser"
+				attributes="dn,#LDAP.FirstName#,#LDAP.LastName#,#LDAP.Email#,#LDAP.MemberOf#"
+				start="#LDAP.Start#"
+				maxrows="1"
+				scope="#LDAP.Scope#"
+				filter="#LDAP.UID#=#arguments.username#"
+				server="#LDAP.Server#"
+				port="#LDAP.Port#"
+				username="#LDAP.Username#"
+				password="#LDAP.Password#"
+				secure="#LDAP.Secure#">
+		<cfelse>
+			<cfldap action="QUERY"
+				name="rsUser"
+				attributes="dn,#LDAP.FirstName#,#LDAP.LastName#,#LDAP.Email#,#LDAP.MemberOf#"
+				start="#LDAP.Start#"
+				maxrows="1"
+				scope="#LDAP.Scope#"
+				filter="#LDAP.UID#=#arguments.username#"
+				server="#LDAP.Server#"
+				port="#LDAP.Port#"
+				username="#LDAP.Username#"
+				password="#LDAP.Password#">
 			
-			<cfset found=true>
-
-				
+		</cfif>	
+		
+		<cfset found=true>
+		
 	<cfcatch type="any">
 		<cfif variables.pluginConfig.getSetting('debugging') eq "True">
 		<cfdump var="#cfcatch#">
