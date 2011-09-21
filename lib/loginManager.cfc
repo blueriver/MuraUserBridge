@@ -68,7 +68,7 @@
 			</cfloop>
 		</cfif>
 		
-		<cflock name="#$.event('siteID')##userStruct.remoteID#userBridge" timeout="30" type="exclusive">
+		<cflock name="#$.event('siteID')##userStruct.username#userBridge" timeout="30" type="exclusive">
 			<!--- Check to see if the user has previous login into the system --->
 			<cfset userBean=$.getBean('user').loadBy(username=userStruct.username,siteID=$.event('siteID'))>						
 						
