@@ -23,7 +23,7 @@
 <providerURL>http://blueriver.com</providerURL>
 <category>Application</category>
 <settings>
-	
+	<!-- Being LDAP specific -->
 	<setting>
 		<name>Start</name>
 		<label></label>
@@ -215,7 +215,7 @@
 		<optionlist>True^False</optionlist>
 		<optionlabellist></optionlabellist>
 	</setting>
-	
+	<!-- End LDAP Specific -->
 	<setting>
 		<name>AdminGroup</name>
 		<label>Admin Group Mapping</label>
