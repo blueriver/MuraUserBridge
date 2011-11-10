@@ -23,7 +23,7 @@
 <providerURL>http://blueriver.com</providerURL>
 <category>Application</category>
 <settings>
-	<!-- Being LDAP specific -->
+	<!-- Begin LDAP specific -->
 	<setting>
 		<name>Start</name>
 		<label></label>
