@@ -175,7 +175,9 @@ Set the "returnStruct .success" variables. to true or false depending if the use
 		
 	<cfif structKeyExists(request,"userDomain") and len(request.userDomain)>
 		<cfset LDAP.userDomain=request.userDomain>
-	<cfelse>	
+	<cfelseif yesNoFormat(variables.pluginConfig.getSetting('usernameHasDomain'))>	
+		<cfset LDAP.userDomain=listFirst(arguments.username,"\")/>
+	<cfelse>
 		<cfset LDAP.userDomain=listFirst(variables.pluginConfig.getSetting('userDomain'))/>
 	</cfif>
 		
@@ -199,10 +201,14 @@ Set the "returnStruct .success" variables. to true or false depending if the use
 	<cfset remoteID=replaceNoCase(remoteID,"{userdomain}",LDAP.UserDomain,"ALL")>
 	
 	<cfif arguments.mode eq "manual">
-		<cfset LDAP.Username=variables.pluginConfig.getSetting('usernameSyntax')>
-		<cfset LDAP.Username=replaceNoCase(LDAP.Username,"{uid}",arguments.username,"ALL")>
-		<cfset LDAP.Username=replaceNoCase(LDAP.Username,"{delimiter}",LDAP.delimiter,"ALL")>
-		<cfset LDAP.Username=replaceNoCase(LDAP.Username,"{userdomain}",LDAP.UserDomain,"ALL")>
+		<cfif yesNoFormat(variables.pluginConfig.getSetting('usernameHasDomain'))>	
+			<cfset LDAP.Username=arguments.username>
+		<cfelse>
+			<cfset LDAP.Username=variables.pluginConfig.getSetting('usernameSyntax')>
+			<cfset LDAP.Username=replaceNoCase(LDAP.Username,"{uid}",arguments.username,"ALL")>
+			<cfset LDAP.Username=replaceNoCase(LDAP.Username,"{delimiter}",LDAP.delimiter,"ALL")>
+			<cfset LDAP.Username=replaceNoCase(LDAP.Username,"{userdomain}",LDAP.UserDomain,"ALL")>
+		</cfif>
 		<cfset LDAP.Password=arguments.password>
 	<cfelse>
 		<cfset LDAP.Username=variables.pluginConfig.getSetting('AutoLoginUsername')>
@@ -218,7 +224,7 @@ Set the "returnStruct .success" variables. to true or false depending if the use
 				start="#LDAP.Start#"
 				maxrows="1"
 				scope="#LDAP.Scope#"
-				filter="#LDAP.UID#=#arguments.username#"
+				filter="#LDAP.UID#=#listLast(arguments.username,'\')#"
 				server="#LDAP.Server#"
 				port="#LDAP.Port#"
 				username="#LDAP.Username#"
@@ -231,7 +237,7 @@ Set the "returnStruct .success" variables. to true or false depending if the use
 				start="#LDAP.Start#"
 				maxrows="1"
 				scope="#LDAP.Scope#"
-				filter="#LDAP.UID#=#arguments.username#"
+				filter="#LDAP.UID#=#listLast(arguments.username,'\')#"
 				server="#LDAP.Server#"
 				port="#LDAP.Port#"
 				username="#LDAP.Username#"
