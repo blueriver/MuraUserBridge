@@ -175,7 +175,7 @@ Set the "returnStruct .success" variables. to true or false depending if the use
 		
 	<cfif structKeyExists(request,"userDomain") and len(request.userDomain)>
 		<cfset LDAP.userDomain=request.userDomain>
-	<cfelseif yesNoFormat(variables.pluginConfig.getSetting('usernameHasDomain'))>	
+	<cfelseif isBoolean(variables.pluginConfig.getSetting('usernameHasDomain')) and variables.pluginConfig.getSetting('usernameHasDomain')>	
 		<cfset LDAP.userDomain=listFirst(arguments.username,"\")/>
 	<cfelse>
 		<cfset LDAP.userDomain=listFirst(variables.pluginConfig.getSetting('userDomain'))/>
@@ -242,20 +242,19 @@ Set the "returnStruct .success" variables. to true or false depending if the use
 				port="#LDAP.Port#"
 				username="#LDAP.Username#"
 				password="#LDAP.Password#">
-			
 		</cfif>	
 		
-		<cfset found=true>
+		<cfset found=rsUser.recordcount>
 		
-	<cfcatch type="any">
-		<cfif variables.pluginConfig.getSetting('debugging') eq "True">
-		<cfdump var="#cfcatch#">
-		<cfabort>
-		</cfif>
-	</cfcatch>
+		<cfcatch type="any">
+			<cfif variables.pluginConfig.getSetting('debugging') eq "True">
+			<cfdump var="#cfcatch#">
+			<cfabort>
+			</cfif>
+		</cfcatch>
 	</cftry>
 
-	<cfif found and rsUser.recordcount>
+	<cfif found>
 	
 		<cfset returnStruct.found=true />
 		<cfset returnStruct.remoteID=remoteID />
