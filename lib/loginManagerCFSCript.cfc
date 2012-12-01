@@ -265,7 +265,7 @@ component extends="mura.plugin.pluginGenericEventHandler" {
 			returnStruct.memberships="";
 				            
 			if(variables.pluginConfig.getSetting('syncMemberships') eq "True"){		
-				for(i=1,i lt listLen(rsUser.memberof),i++){
+				for(i=1,i lt listLen(rsUser.memberof),i=i+1){
 					if(trim(listFirst(i,"=")) eq "CN"){
 						returnStruct.memberships=listappend(returnStruct.memberships,listLast(i,"="));
 					}
