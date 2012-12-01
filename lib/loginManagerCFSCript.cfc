@@ -136,22 +136,27 @@ component extends="mura.plugin.pluginGenericEventHandler" {
 		//Do you custom logic to look up use in external user database.
 		//Set the "returnStruct .success" variables. to true or false depending if the user was found.
 		if(arguments.username eq "John"){
-			returnStruct.found=true;
-			returnStruct.fname= "John";
-			returnStruct.lname= "Doe";
-			returnStruct.username= "JohnDoe";
-			returnStruct.remoteID= "JohnDoe";
-			returnStruct.email= "john@example.com";
+			
 			//The memberships attribute is a comma separated list of user groups or roles that this user  should be assigned (IE. "Sales,Member,Board of Directors")
-			returnStruct.memberships="";
+			returnStruct{
+					found=true,
+					fname= "John",
+					lname= "Doe",
+					username= "JohnDoe",
+					remoteID= "JohnDoe",
+					email= "john@example.com",
+					memberships=""
+				}
 		} else {	
 
-			returnStruct.found=false;
-			returnStruct.fname= "";
-			returnStruct.lname= "";
-			returnStruct.username= "";
-			returnStruct.email= "";
-			returnStruct.memberships="";
+			returnStruct={
+					found=false,
+					fname= "",
+					lname= "",
+					username= "",
+					email= "",
+					memberships=""
+				}
 		}
 
 		return returnStruct;
@@ -168,16 +173,19 @@ component extends="mura.plugin.pluginGenericEventHandler" {
 		var remoteID = ""; 
 		var service=new ldap();
 
-		LDAP.Scope=variables.pluginConfig.getSetting('Scope');
-		LDAP.Start=variables.pluginConfig.getSetting('start');		
-		LDAP.Server=variables.pluginConfig.getSetting('Server');
-		LDAP.Port=variables.pluginConfig.getSetting('Port');
-		LDAP.FirstName=variables.pluginConfig.getSetting('FirstName');
-		LDAP.LastName=variables.pluginConfig.getSetting('LastName');
-		LDAP.Delimiter=variables.pluginConfig.getSetting('UsernameSyntaxDelimeter');
-		LDAP.Email=variables.pluginConfig.getSetting('email');
-		LDAP.UID=variables.pluginConfig.getSetting('UID');
-		LDAP.MemberOf=variables.pluginConfig.getSetting('MemberOf');
+		LDAP={
+				Scope=variables.pluginConfig.getSetting('Scope'),
+				Start=variables.pluginConfig.getSetting('start'),	
+				Server=variables.pluginConfig.getSetting('Server'),
+				Port=variables.pluginConfig.getSetting('Port'),
+				FirstName=variables.pluginConfig.getSetting('FirstName'),
+				LastName=variables.pluginConfig.getSetting('LastName'),
+				Delimiter=variables.pluginConfig.getSetting('UsernameSyntaxDelimeter'),
+				Email=variables.pluginConfig.getSetting('email'),
+				UID=variables.pluginConfig.getSetting('UID'),
+				MemberOf=variables.pluginConfig.getSetting('MemberOf')
+			}
+
 			
 		if(structKeyExists(request,"userDomain") and len(request.userDomain)){
 			LDAP.userDomain=request.userDomain;
@@ -251,12 +259,14 @@ component extends="mura.plugin.pluginGenericEventHandler" {
 
 		if(found and rsUser.recordcount){
 		
-			returnStruct.found=true;
-			returnStruct.remoteID=remoteID;
-			returnStruct.username=arguments.username;
-			returnStruct.fname=evaluate("rsUser.#LDAP.FirstName#");
-			returnStruct.lname=evaluate("rsUser.#LDAP.LastName#");
-			returnStruct.email=evaluate("rsUser.#LDAP.Email#");
+			returnStruct={
+							found=true,
+							remoteID=remoteID,
+							username=arguments.username,
+							fname=evaluate("rsUser.#LDAP.FirstName#"),
+							lname=evaluate("rsUser.#LDAP.LastName#"),
+							email=evaluate("rsUser.#LDAP.Email#")
+						}
 			
 			if(not len(returnStruct.email)){
 				returnStruct.email=arguments.username & '@' & LDAP.server;
@@ -273,13 +283,15 @@ component extends="mura.plugin.pluginGenericEventHandler" {
 			}
 			
 		} else {
-			returnStruct.found=false;
-			returnStruct.remoteID="";
-			returnStruct.username="";
-			returnStruct.fname="";
-			returnStruct.lname="";
-			returnStruct.email="";
-			returnStruct.memberships="";
+			returnStruct={
+						found=false,
+						remoteID="",
+						username="",
+						fname="",
+						lname="",
+						email="",
+						memberships=""
+					}
 		}
 		
 		return returnStruct;
