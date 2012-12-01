@@ -131,7 +131,7 @@ component extends="mura.plugin.pluginGenericEventHandler" {
 	/*
 	function lookupUser(username,password){
 
-		var returnStruct={}};
+		var returnStruct={};
 
 		//Do you custom logic to look up use in external user database.
 		//Set the "returnStruct .success" variables. to true or false depending if the user was found.
