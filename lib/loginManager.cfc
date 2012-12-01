@@ -175,9 +175,7 @@ Set the "returnStruct .success" variables. to true or false depending if the use
 		
 	<cfif structKeyExists(request,"userDomain") and len(request.userDomain)>
 		<cfset LDAP.userDomain=request.userDomain>
-	<cfelseif isBoolean(variables.pluginConfig.getSetting('usernameHasDomain')) and variables.pluginConfig.getSetting('usernameHasDomain')>	
-		<cfset LDAP.userDomain=listFirst(arguments.username,"\")/>
-	<cfelse>
+	<cfelse>	
 		<cfset LDAP.userDomain=listFirst(variables.pluginConfig.getSetting('userDomain'))/>
 	</cfif>
 		
@@ -201,14 +199,10 @@ Set the "returnStruct .success" variables. to true or false depending if the use
 	<cfset remoteID=replaceNoCase(remoteID,"{userdomain}",LDAP.UserDomain,"ALL")>
 	
 	<cfif arguments.mode eq "manual">
-		<cfif yesNoFormat(variables.pluginConfig.getSetting('usernameHasDomain'))>	
-			<cfset LDAP.Username=arguments.username>
-		<cfelse>
-			<cfset LDAP.Username=variables.pluginConfig.getSetting('usernameSyntax')>
-			<cfset LDAP.Username=replaceNoCase(LDAP.Username,"{uid}",arguments.username,"ALL")>
-			<cfset LDAP.Username=replaceNoCase(LDAP.Username,"{delimiter}",LDAP.delimiter,"ALL")>
-			<cfset LDAP.Username=replaceNoCase(LDAP.Username,"{userdomain}",LDAP.UserDomain,"ALL")>
-		</cfif>
+		<cfset LDAP.Username=variables.pluginConfig.getSetting('usernameSyntax')>
+		<cfset LDAP.Username=replaceNoCase(LDAP.Username,"{uid}",arguments.username,"ALL")>
+		<cfset LDAP.Username=replaceNoCase(LDAP.Username,"{delimiter}",LDAP.delimiter,"ALL")>
+		<cfset LDAP.Username=replaceNoCase(LDAP.Username,"{userdomain}",LDAP.UserDomain,"ALL")>
 		<cfset LDAP.Password=arguments.password>
 	<cfelse>
 		<cfset LDAP.Username=variables.pluginConfig.getSetting('AutoLoginUsername')>
@@ -224,7 +218,7 @@ Set the "returnStruct .success" variables. to true or false depending if the use
 				start="#LDAP.Start#"
 				maxrows="1"
 				scope="#LDAP.Scope#"
-				filter="#LDAP.UID#=#listLast(arguments.username,'\')#"
+				filter="#LDAP.UID#=#arguments.username#"
 				server="#LDAP.Server#"
 				port="#LDAP.Port#"
 				username="#LDAP.Username#"
@@ -237,24 +231,25 @@ Set the "returnStruct .success" variables. to true or false depending if the use
 				start="#LDAP.Start#"
 				maxrows="1"
 				scope="#LDAP.Scope#"
-				filter="#LDAP.UID#=#listLast(arguments.username,'\')#"
+				filter="#LDAP.UID#=#arguments.username#"
 				server="#LDAP.Server#"
 				port="#LDAP.Port#"
 				username="#LDAP.Username#"
 				password="#LDAP.Password#">
+			
 		</cfif>	
 		
-		<cfset found=rsUser.recordcount>
+		<cfset found=true>
 		
-		<cfcatch type="any">
-			<cfif variables.pluginConfig.getSetting('debugging') eq "True">
-			<cfdump var="#cfcatch#">
-			<cfabort>
-			</cfif>
-		</cfcatch>
+	<cfcatch type="any">
+		<cfif variables.pluginConfig.getSetting('debugging') eq "True">
+		<cfdump var="#cfcatch#">
+		<cfabort>
+		</cfif>
+	</cfcatch>
 	</cftry>
 
-	<cfif found>
+	<cfif found and rsUser.recordcount>
 	
 		<cfset returnStruct.found=true />
 		<cfset returnStruct.remoteID=remoteID />

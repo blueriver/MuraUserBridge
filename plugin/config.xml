@@ -51,19 +51,6 @@
 		<optionlabellist></optionlabellist>
 	</setting>
 	<setting>
-		<name>usernameHasDomain</name>
-		<label>Does username include domain?</label>
-		<hint>Do users login with their userdomain? (IE: domain\username)</hint>
-		<type>select</type>
-		<required>true</required>
-		<validation></validation>
-		<regex></regex>
-		<message></message>
-		<defaultvalue>False</defaultvalue>
-		<optionlist>True^False</optionlist>
-		<optionlabellist></optionlabellist>
-	</setting>
-	<setting>
 		<name>userDomain</name>
 		<label></label>
 		<hint>Login domain. This can be a comma separated list.</hint>
