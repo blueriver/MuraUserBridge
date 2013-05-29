@@ -128,7 +128,6 @@ component extends="mura.plugin.pluginGenericEventHandler" {
 				
 	}
 
-	/*
 	function lookupUser(username,password){
 
 		var returnStruct={};
@@ -161,142 +160,8 @@ component extends="mura.plugin.pluginGenericEventHandler" {
 
 		return returnStruct;
 	}
-	*/
-
-	function lookupUser(username,password="",mode="manual"){
-		
-		var rsUser = "";
-		var returnStruct = structNew();
-		var found=false;
-	 	var LDAP = structNew();
-		var i = "";
-		var remoteID = ""; 
-		var service=new ldap();
-
-		LDAP={
-				Scope=variables.pluginConfig.getSetting('Scope'),
-				Start=variables.pluginConfig.getSetting('start'),	
-				Server=variables.pluginConfig.getSetting('Server'),
-				Port=variables.pluginConfig.getSetting('Port'),
-				FirstName=variables.pluginConfig.getSetting('FirstName'),
-				LastName=variables.pluginConfig.getSetting('LastName'),
-				Delimiter=variables.pluginConfig.getSetting('UsernameSyntaxDelimeter'),
-				Email=variables.pluginConfig.getSetting('email'),
-				UID=variables.pluginConfig.getSetting('UID'),
-				MemberOf=variables.pluginConfig.getSetting('MemberOf')
-			}
-
-			
-		if(structKeyExists(request,"userDomain") and len(request.userDomain)){
-			LDAP.userDomain=request.userDomain;
-		} else {	
-			LDAP.userDomain=listFirst(variables.pluginConfig.getSetting('userDomain'));
-		}
-			
-		if(isBoolean(variables.pluginConfig.getSetting('useSSL'))
-				and variables.pluginConfig.getSetting('useSSL')){
-			LDAP.Secure="CFSSL_Basic";
-		} else {	
-			LDAP.Secure="";
-		}
-		
-		remoteID=variables.pluginConfig.getSetting('usernameSyntax');
-		remoteID=replaceNoCase(remoteID,"{uid}",arguments.username,"ALL");
-		remoteID=replaceNoCase(remoteID,"{delimiter}",LDAP.delimiter,"ALL");
-		remoteID=replaceNoCase(remoteID,"{userdomain}",LDAP.UserDomain,"ALL");
-		
-		if(arguments.mode eq "manual"){
-			LDAP.Username=variables.pluginConfig.getSetting('usernameSyntax');
-			LDAP.Username=replaceNoCase(LDAP.Username,"{uid}",arguments.username,"ALL");
-			LDAP.Username=replaceNoCase(LDAP.Username,"{delimiter}",LDAP.delimiter,"ALL");
-			LDAP.Username=replaceNoCase(LDAP.Username,"{userdomain}",LDAP.UserDomain,"ALL");
-			LDAP.Password=arguments.password;
-		} else {
-			LDAP.Username=variables.pluginConfig.getSetting('AutoLoginUsername');
-			LDAP.Password=variables.pluginConfig.getSetting('AutoLoginPassword');
-		}
-		
-		//Get User
-		try {
-			if(len(LDAP.Secure)}{
-				service.query(
-					name="rsUser"
-					attributes="dn,#LDAP.FirstName#,#LDAP.LastName#,#LDAP.Email#,#LDAP.MemberOf#"
-					start="#LDAP.Start#"
-					maxrows="1"
-					scope="#LDAP.Scope#"
-					filter="#LDAP.UID#=#arguments.username#"
-					server="#LDAP.Server#"
-					port="#LDAP.Port#"
-					username="#LDAP.Username#"
-					password="#LDAP.Password#"
-					secure="#LDAP.Secure#"
-				);
-			} else {
-				service.query(
-					name="rsUser"
-					attributes="dn,#LDAP.FirstName#,#LDAP.LastName#,#LDAP.Email#,#LDAP.MemberOf#"
-					start="#LDAP.Start#"
-					maxrows="1"
-					scope="#LDAP.Scope#"
-					filter="#LDAP.UID#=#arguments.username#"
-					server="#LDAP.Server#"
-					port="#LDAP.Port#"
-					username="#LDAP.Username#"
-					password="#LDAP.Password#"
-				);
-				
-			}
-			
-			found=true;
-		}	
-		catch(err){
-			if(variables.pluginConfig.getSetting('debugging') eq "True"){
-				writeDump(var=err,abort=true);
-			}
-		}
 
 
-		if(found and rsUser.recordcount){
-		
-			returnStruct={
-							found=true,
-							remoteID=remoteID,
-							username=arguments.username,
-							fname=evaluate("rsUser.#LDAP.FirstName#"),
-							lname=evaluate("rsUser.#LDAP.LastName#"),
-							email=evaluate("rsUser.#LDAP.Email#")
-						}
-			
-			if(not len(returnStruct.email)){
-				returnStruct.email=arguments.username & '@' & LDAP.server;
-			}
-			
-			returnStruct.memberships="";
-				            
-			if(variables.pluginConfig.getSetting('syncMemberships') eq "True"){		
-				for(i=1,i lt listLen(rsUser.memberof),i=i+1){
-					if(trim(listFirst(i,"=")) eq "CN"){
-						returnStruct.memberships=listappend(returnStruct.memberships,listLast(i,"="));
-					}
-				}
-			}
-			
-		} else {
-			returnStruct={
-						found=false,
-						remoteID="",
-						username="",
-						fname="",
-						lname="",
-						email="",
-						memberships=""
-					}
-		}
-		
-		return returnStruct;
-									  			
-	}
 
 	function getSiteID(){
 			var siteID="";
