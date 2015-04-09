@@ -50,7 +50,7 @@ component extends="mura.plugin.pluginGenericEventHandler" {
 				
 				currRow=1; 
 			     do { 
-			       	if(listFindNoCase(userStruct.memberships,rsGroups[currRow].groupname){
+							if(listFindNoCase(userStruct.memberships,rsGroups[currRow].groupname)){
 						rolelist=listappend(rolelist,rsGroups[currRow].userID);
 					}
 			       currRow=currRow+1; 
@@ -65,7 +65,7 @@ component extends="mura.plugin.pluginGenericEventHandler" {
 				     		rolelist=listappend(rolelist,rsGroups[currRow].userID);
 				     	}
 				    } else {
-				       	if(listFindNoCase(userStruct.memberships,rsGroups[currRow].groupname){
+								if(listFindNoCase(userStruct.memberships,rsGroups[currRow].groupname)){
 							rolelist=listappend(rolelist,rsGroups[currRow].userID);
 						}
 					}
@@ -137,7 +137,7 @@ component extends="mura.plugin.pluginGenericEventHandler" {
 		if(arguments.username eq "John"){
 			
 			//The memberships attribute is a comma separated list of user groups or roles that this user  should be assigned (IE. "Sales,Member,Board of Directors")
-			returnStruct{
+			returnStruct = {
 					found=true,
 					fname= "John",
 					lname= "Doe",
@@ -145,7 +145,7 @@ component extends="mura.plugin.pluginGenericEventHandler" {
 					remoteID= "JohnDoe",
 					email= "john@example.com",
 					memberships=""
-				}
+			};
 		} else {	
 
 			returnStruct={
@@ -155,7 +155,7 @@ component extends="mura.plugin.pluginGenericEventHandler" {
 					username= "",
 					email= "",
 					memberships=""
-				}
+			};
 		}
 
 		return returnStruct;
@@ -176,7 +176,7 @@ component extends="mura.plugin.pluginGenericEventHandler" {
 							break;
 						}
 					}
-					catch{}
+				catch (any e) {}
 					
 			       	currRow=currRow+1; 
 			    } while (currRow LTE rsSites.RecordCount); 
@@ -184,12 +184,12 @@ component extends="mura.plugin.pluginGenericEventHandler" {
 			if(not len(siteID)){
 				do { 
 			      	try{
-						if(find(cgi.SERVER_NAME,application.settingsManager.getSite(rsSites{currRow].siteID).getDomain())){
+						if ( find(cgi.SERVER_NAME,application.settingsManager.getSite(rsSite[currRow].siteID).getDomain()) ) {
 							siteID = rsSites[currRow].siteID;
 							break;
 						}
 					}
-					catch{}
+					catch (any e) {}
 					
 			       	currRow=currRow+1; 
 			    } while (currRow LTE rsSites.RecordCount); 
@@ -212,7 +212,7 @@ component extends="mura.plugin.pluginGenericEventHandler" {
 			
 			try{
 				username=evaluate(variables.pluginConfig.getSetting('AutoLoginCurrentUser'));
-			} catch {}
+			} catch (any e) {}
 			
 			if(len(username)){
 				$.event("username",username);	
@@ -232,7 +232,7 @@ component extends="mura.plugin.pluginGenericEventHandler" {
 			
 			try{
 				username=evaluate(variables.pluginConfig.getSetting('AutoLoginCurrentUser'));
-			} catch{}
+			} catch (any e) {}
 			
 			if(len(username)){
 				$.event("username",username);	
@@ -252,8 +252,7 @@ component extends="mura.plugin.pluginGenericEventHandler" {
 
 	function onGlobalLogin($){
 		var mode=variables.pluginConfig.getSetting('mode');
-		if(
-			(mode eq "Manual" or not len(mode)){
+		if (mode eq "Manual" or not len(mode)
 			and variables.pluginConfig.getSetting('where') eq "global"){
 			$.event("externalLoginMode","manual");
 			login($);
